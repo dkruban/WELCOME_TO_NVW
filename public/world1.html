@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World 1 — Peaceful Park</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+  <style>body{margin:0;font-family:Arial}</style>
+</head>
+<body>
+  <a-scene background="color: #87CEEB" vr-mode-ui="enabled: true">
+    <a-entity light="type: ambient; intensity: 0.7"></a-entity>
+    <a-entity light="type: directional; intensity: 0.8" position="-1 2 1"></a-entity>
+
+    <a-entity id="rig" position="0 1.6 4">
+      <a-entity camera look-controls wasd-controls>
+        <a-entity cursor="fuse: true; fuseTimeout: 500" geometry="primitive: ring; radiusInner:0.01; radiusOuter:0.02" material="color: black; shader: flat" position="0 0 -1"></a-entity>
+      </a-entity>
+    </a-entity>
+
+    <a-sky color="#88d0ff"></a-sky>
+    <a-plane rotation="-90 0 0" width="60" height="60" color="#7BC8A4"></a-plane>
+
+    <!-- Trees (simple cones) -->
+    <a-cylinder position="-3 0.6 -2" radius="0.2" height="1.2" color="#7B4F3C"></a-cylinder>
+    <a-cone position="-3 1.6 -2" radius-bottom="0.9" height="1.2" color="#2E7D32"></a-cone>
+
+    <a-cylinder position="3 0.6 -3" radius="0.2" height="1.2" color="#7B4F3C"></a-cylinder>
+    <a-cone position="3 1.6 -3" radius-bottom="0.9" height="1.2" color="#2E7D32"></a-cone>
+
+    <!-- Interactive bench -->
+    <a-box id="bench" position="0 0.3 -2" depth="0.5" height="0.2" width="1.8" color="#8D6E63" click-toggle-color></a-box>
+
+    <!-- Spawn spheres with 's' -->
+    <a-entity id="spawner"></a-entity>
+
+    <a-entity position="-1.2 1.8 -1">
+      <a-text value="World 1: Peaceful Park" color="#111" width="3"></a-text>
+    </a-entity>
+
+    <a-entity position="2 2 -1">
+      <a-plane width="1.4" height="0.5" color="#FFF" material="opacity:0.9"></a-plane>
+      <a-text value="Press 's' to spawn a sphere" position="-0.6 0 -0.01" width="1.6" color="#000"></a-text>
+    </a-entity>
+
+    <!-- Simple ambient audio (placeholder) -->
+    <a-entity sound="src: url(/audio/ambient_forest.mp3); autoplay: true; loop: true; positional: false; volume: 0.4"></a-entity>
+
+    <script>
+      // click-toggle-color component
+      AFRAME.registerComponent('click-toggle-color', {
+        init: function () {
+          const el = this.el;
+          const colors = ['#8D6E63','#D84315','#4CAF50','#2196F3'];
+          let idx = 0;
+          el.addEventListener('click', () => {
+            idx = (idx + 1) % colors.length;
+            el.setAttribute('color', colors[idx]);
+          });
+        }
+      });
+
+      // spawn-on-key functionality
+      window.addEventListener('keydown', function(e){
+        if(e.key === 's'){
+          const scene = document.querySelector('a-scene');
+          const camera = document.querySelector('[camera]');
+          const camPos = new THREE.Vector3();
+          const camDir = new THREE.Vector3();
+          camera.object3D.getWorldPosition(camPos);
+          camera.object3D.getWorldDirection(camDir);
+          const spawnPos = camPos.clone().add(camDir.multiplyScalar(2));
+          const sphere = document.createElement('a-sphere');
+          sphere.setAttribute('position', spawnPos);
+          sphere.setAttribute('radius', 0.25);
+          sphere.setAttribute('color', '#FFC65D');
+          sphere.setAttribute('dynamic-body', '');
+          scene.appendChild(sphere);
+        }
+      });
+    </script>
+  </a-scene>
+</body>
+</html>

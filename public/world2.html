@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>World 2 — Cyber City</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <style>body{margin:0;font-family:Arial}</style>
+</head>
+<body>
+  <a-scene background="color: #000011" vr-mode-ui="enabled: true">
+    <a-entity light="type: ambient; intensity: 0.4"></a-entity>
+    <a-entity light="type: point; intensity: 1; distance: 20" position="0 4 0"></a-entity>
+
+    <a-entity id="rig" position="0 1.6 4">
+      <a-entity camera look-controls wasd-controls>
+        <a-entity cursor="fuse: true; fuseTimeout: 500" geometry="primitive: ring; radiusInner:0.01; radiusOuter:0.02" material="color: #FFF; shader: flat" position="0 0 -1"></a-entity>
+      </a-entity>
+    </a-entity>
+
+    <a-sky color="#001022"></a-sky>
+
+    <!-- Neon blocks to simulate buildings -->
+    <a-box position="-3 1 -4" depth="1" height="2" width="1" color="#00BCD4"></a-box>
+    <a-box position="-1 1 -3" depth="1" height="2.2" width="1" color="#8E24AA"></a-box>
+    <a-box position="1 1 -4" depth="1" height="1.8" width="1" color="#FF5722"></a-box>
+    <a-box position="3 1 -3" depth="1" height="2" width="1" color="#CDDC39"></a-box>
+
+    <a-entity position="-1.2 2.2 -1">
+      <a-text value="World 2: Cyber City" color="#FFF" width="4"></a-text>
+    </a-entity>
+
+    <a-entity position="2 2 -1">
+      <a-plane width="1.6" height="0.5" color="#111" material="opacity:0.8"></a-plane>
+      <a-text value="Press 's' to spawn a neon orb" position="-0.7 0 -0.01" width="1.6" color="#FFF"></a-text>
+    </a-entity>
+
+    <script>
+      window.addEventListener('keydown', function(e){
+        if(e.key === 's'){
+          const scene = document.querySelector('a-scene');
+          const camera = document.querySelector('[camera]');
+          const camPos = new THREE.Vector3();
+          const camDir = new THREE.Vector3();
+          camera.object3D.getWorldPosition(camPos);
+          camera.object3D.getWorldDirection(camDir);
+          const spawnPos = camPos.clone().add(camDir.multiplyScalar(2));
+          const orb = document.createElement('a-sphere');
+          orb.setAttribute('position', spawnPos);
+          orb.setAttribute('radius', 0.2);
+          orb.setAttribute('emissive', '#00E5FF');
+          orb.setAttribute('color', '#00BCD4');
+          scene.appendChild(orb);
+          // simple animation
+          orb.setAttribute('animation', 'property: position; to: 0 2 -2; dur: 2000; loop: false');
+        }
+      });
+    </script>
+  </a-scene>
+</body>
+</html>
