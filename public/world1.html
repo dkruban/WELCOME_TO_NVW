@@ -8,6 +8,37 @@
   <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
   <style>body{margin:0;font-family:Arial}</style>
 </head>
+  <script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { ReadyPlayerMe } from '@readyplayerme/three';
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// Lighting
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(1, 1, 1);
+scene.add(light);
+
+// Load human avatar
+const avatar = new ReadyPlayerMe({
+  scene,
+  modelUrl: 'https://models.readyplayer.me/63cfc2fa1cc5c9b4a6ef4a45.glb' // sample realistic human
+});
+
+camera.position.z = 3;
+
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+
 <body>
   <a-scene background="color: #87CEEB" vr-mode-ui="enabled: true">
     <a-entity light="type: ambient; intensity: 0.7"></a-entity>
